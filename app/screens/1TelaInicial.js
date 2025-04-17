@@ -20,7 +20,7 @@ export default function TelaInicial() {
     // Função para buscar o ano do artigo mais antigo
     const fetchOldestYear = async () => {
       try {
-        const response = await axios.get('https://textocontexto.pythonanywhere.com/api/oldest-article-year/');  // Substitua pela URL da sua API
+        const response = await axios.get('https://textocontexto.pythonanywhere.com/api/oldest-article-year/');  
         const oldestYear = response.data.year;
 
         // Generate years from the oldest year to the current year

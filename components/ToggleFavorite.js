@@ -13,7 +13,6 @@ const FavoriteStar = ({ articleId }) => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
-        console.log('Token not found');
         return;
       }
 

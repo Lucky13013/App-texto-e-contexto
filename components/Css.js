@@ -141,7 +141,7 @@ export default function useDynamicStyles() {
         backgroundColor:"#e06eaa"
     },
     separator_80: {
-        height: 1,
+        height: 1.5,
         width: '80%',
         backgroundColor:"#e06eaa",
         alignSelf:"center",

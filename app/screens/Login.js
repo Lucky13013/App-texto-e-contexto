@@ -12,6 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { AntDesign } from '@expo/vector-icons';
 import useDynamicStyles from '../../components/Css.js';
 
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { signInWithGoogle } from '../../components/googlelogin.js';
+
 export default function Loguin() {
   const { t } = useTranslation();
   const senha = t("login.Senha");
@@ -22,6 +26,7 @@ export default function Loguin() {
   const navigation = useNavigation();
   const [check, setCheck] = useState(false);
   const styles = useDynamicStyles();
+
 
   // Logica de Login
   const handleLogin = async () => {
@@ -68,7 +73,7 @@ export default function Loguin() {
       <Image source={require("../../assets/images/icone.png") }style={styles.image}/>
       <View style={styles.conteiner_loguin}>
         <Text style={styles.texto}>
-          {t("login.texto1")} <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}><Text style={{ color: 'blue', fontSize: 16, alignSelf: 'center', textAlign: 'center' }}>{t("login.Cadastre-se")}</Text></TouchableOpacity>
+          {t("login.texto1")}
         </Text>
         <View style={styles.inputContainer}>
           <TextInput
@@ -116,6 +121,15 @@ export default function Loguin() {
             
           </>
         )}
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Cadastro')}>
+              <Text style={styles.buttonText}>{t("login.Cadastre-se")}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => signInWithGoogle(navigation, check)}>
+              <FontAwesomeIcon icon={faGoogle} size={20} color="#fff" style={{ marginRight: 10 }} />
+              <Text style={styles.buttonText}>{t("login.Cadastre-se")}</Text>
+        </TouchableOpacity>
+
+
       </View>
     </View>
   );

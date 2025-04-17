@@ -1,5 +1,5 @@
 import * as SplashScreen from 'expo-splash-screen';
-import { Pressable, StatusBar, TouchableOpacity, View, Text } from 'react-native';
+import { Pressable, StatusBar, TouchableOpacity, View, Text, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import './constants/i18n.js';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +36,9 @@ import PasswordReset from './app/screens/PasswordReset.js';
 import ForgotPassword from './app/screens/ForgotPassword.js';
 import { FontSizeProvider } from './components/FontSizeProvider';
 
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+
 // Habilita o uso de telas nativas
 enableScreens();
 
@@ -58,6 +61,13 @@ const statusbarHeight = StatusBar.currentHeight;
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.hideAsync();
 SplashScreen.preventAutoHideAsync();
+
+GoogleSignin.configure({
+  
+  offlineAccess: false,
+  forceCodeForRefreshToken: false,
+});
+
 
 function Tabs() {
   const navigation = useNavigation();
@@ -143,77 +153,103 @@ function Tabs() {
   );
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: '#fff',
+        tabBarInactiveTintColor: '#fff',
+        tabBarStyle: {
+          backgroundColor: '#a74e9e',
+          height: 60,
+          paddingBottom: 5,
+        },
+        headerStyle: {
+          backgroundColor: '#a74e9e',
+        },
+        headerTintColor: '#fff',
+        headerTitleAlign: 'center',
+        headerRight: () => <NotificationIcon />,
+        headerLeft: () => (
+          <FontAwesome 
+            name="search" 
+            size={24} 
+            color="#fff" 
+            style={{ marginLeft: 25 }}
+            onPress={() => navigation.navigate('Aba_pesquisa')}
+          />
+        ),
+      }}
+    >
+      {/* Tela Início - Personalização Específica */}
       <Tab.Screen
-        name="Início"
+        name="Inicio"
         component={TelaInicial}
         options={{
-          title: inicio,
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => <NotificationIcon />,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('Aba_pesquisa')}>
-              <FontAwesome name="search" size={25} color="#fff" style={{ marginLeft: 25 }} />
-            </TouchableOpacity>
-          ),
-          headerTintColor: '#fff',
-          headerTitle: inicio,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            marginLeft: '55%',
+          tabBarLabel: inicio,
+          tabBarLabelStyle: {
+            textAlign: 'center',
+            width: '100%',
+            fontSize: 12,
+            marginBottom: 3,
           },
-          headerStyle: { backgroundColor: '#a74e9e' },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
-          tabBarStyle: { backgroundColor: '#a74e9e' },
+          tabBarIcon: ({ color }) => (
+            <FontAwesome 
+              name="home" 
+              size={24} 
+              color={color}
+              style={{ marginTop: 3 }}
+            />
+          ),
+          headerTitle: inicio,
         }}
       />
+
+      {/* Tela Favoritos - Personalização Específica */}
       <Tab.Screen
         name="Favoritos"
         component={Favoritos}
         options={{
-          title: fav,
-          tabBarIcon: ({ color }) => <TabBarIcon name="star" color={color} />,
-          headerRight: () => <NotificationIcon />,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('Aba_pesquisa')}>
-              <FontAwesome name="search" size={25} color="#fff" style={{ marginLeft: 25 }} />
-            </TouchableOpacity>
-          ),
-          headerTintColor: '#fff',
-          headerTitle: fav,
-          headerTitleStyle: {
+          tabBarLabel: fav,
+          tabBarLabelStyle: {
+            textAlign: 'center',
+            width: '100%',
+            fontSize: 12,
+            marginBottom: 3,
             fontWeight: 'bold',
-            marginLeft: '45%',
           },
-          headerStyle: { backgroundColor: '#a74e9e' },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
-          tabBarStyle: { backgroundColor: '#a74e9e' },
+          tabBarIcon: ({ color }) => (
+            <FontAwesome 
+              name="star" 
+              size={22} 
+              color={color}
+              style={{ marginTop: 5 }}
+            />
+          ),
+          headerTitle: fav,
         }}
       />
+
+      {/* Tela Ajustes - Personalização Específica */}
       <Tab.Screen
         name="Ajustes"
         component={Ajustes}
         options={{
-          title: ajustes,
-          tabBarIcon: ({ color }) => <Entypo name="dots-three-horizontal" size={30} color={color} />,
-          headerRight: () => <NotificationIcon />,
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('Aba_pesquisa')}>
-              <FontAwesome name="search" size={25} color="#fff" style={{ marginLeft: 25 }} />
-            </TouchableOpacity>
-          ),
-          headerTintColor: '#fff',
-          headerTitle: ajustes,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            marginLeft: '50%',
+          tabBarLabel: ajustes,
+          tabBarLabelStyle: {
+            textAlign: 'center',
+            width: '100%',
+            fontSize: 12,
+            marginBottom: 3,
+            fontStyle: 'italic',
           },
-          headerStyle: { backgroundColor: '#a74e9e' },
-          tabBarActiveTintColor: '#fff',
-          tabBarInactiveTintColor: '#fff',
-          tabBarStyle: { backgroundColor: '#a74e9e' },
+          tabBarIcon: ({ color }) => (
+            <Entypo 
+              name="dots-three-horizontal" 
+              size={24} 
+              color={color}
+              style={{ marginTop: 3 }}
+            />
+          ),
+          headerTitle: ajustes,
         }}
       />
     </Tab.Navigator>

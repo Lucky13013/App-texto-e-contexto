@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
-    borderRadius:10
+    borderRadius: 5,
+    marginBottom: '3%'
   },
   estrela: {
     flexDirection: 'row',
