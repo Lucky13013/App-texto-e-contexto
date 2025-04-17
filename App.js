@@ -63,7 +63,8 @@ SplashScreen.hideAsync();
 SplashScreen.preventAutoHideAsync();
 
 GoogleSignin.configure({
-  
+  webClientId: '522347973020-b4aeo7h4af25uhk72flfq2hjsh2cnvsr.apps.googleusercontent.com', // usado para verificar token no backend
+  iosClientId: '522347973020-l71k92fglp4k4d42rra764ksi4edcbjp.apps.googleusercontent.com', // usado no iOS para gerar o idToken corretamente
   offlineAccess: false,
   forceCodeForRefreshToken: false,
 });
