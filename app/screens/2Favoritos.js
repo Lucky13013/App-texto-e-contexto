@@ -11,43 +11,17 @@ import FavoriteStar from '../../components/ToggleFavorite.js';
 export default function Favoritos() {
   const [favoritos, setFavoritos] = useState([]);
   const [search, setSearch] = useState('');
-  const [filteredFavoritos, setFilteredFavoritos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [order, setOrder] = useState('default');
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigation = useNavigation();
-  const { i18n } = useTranslation();
   const idioma = i18n.language;
 
   useEffect(() => {
     fetchFavoritos();
   }, [order]);
-
-  useEffect(() => {
-    if (search === '') {
-      setFilteredFavoritos(favoritos);
-    } else {
-      const filtered = favoritos.filter(article => {
-        const hasKeyword = article.palavras_chave
-          ? article.palavras_chave.toLowerCase().includes(search.toLowerCase())
-          : false;
-  
-        const hasAuthor = article.autores && Array.isArray(article.autores)
-          ? article.autores.some(author => author.toLowerCase().includes(search.toLowerCase()))
-          : false;
-  
-        const hasTitle = article.titulo && typeof article.titulo === 'object'
-          ? Object.values(article.titulo).some(title => title.toLowerCase().includes(search.toLowerCase()))
-          : false;
-  
-        return hasKeyword || hasAuthor || hasTitle;
-      });
-  
-      setFilteredFavoritos(filtered);
-    }
-  }, [search, favoritos]);
 
   const fetchFavoritos = async () => {
     setLoading(true);
@@ -59,11 +33,9 @@ export default function Favoritos() {
         },
       });
       setFavoritos(response.data);
-      setFilteredFavoritos(response.data);
-      setLoading(false);
-      setRefreshing(false);
     } catch (error) {
       console.log(error);
+    } finally {
       setLoading(false);
       setRefreshing(false);
     }
@@ -82,11 +54,22 @@ export default function Favoritos() {
     }
   };
 
+  const getFiltered = () => {
+    if (!search.trim()) return favoritos;
+
+    return favoritos.filter(article => {
+      const lowerSearch = search.toLowerCase();
+
+      const hasKeyword = article.palavras_chave?.toLowerCase().includes(lowerSearch);
+      const hasAuthor = Array.isArray(article.autores) && article.autores.some(a => a.toLowerCase().includes(lowerSearch));
+      const hasTitle = typeof article.titulo === 'object' && Object.values(article.titulo).some(title => title.toLowerCase().includes(lowerSearch));
+
+      return hasKeyword || hasAuthor || hasTitle;
+    });
+  };
+
   const renderItem = ({ item }) => {
-    let titulo = item.titulo;
-    if (typeof titulo === 'string') {
-      titulo = parseJson(titulo);
-    }
+    let titulo = typeof item.titulo === 'string' ? parseJson(item.titulo) : item.titulo;
 
     return (
       <TouchableOpacity
@@ -94,7 +77,7 @@ export default function Favoritos() {
         onPress={() => navigation.navigate('Tela_de_leitura', { article: item })}
       >
         <Text style={styles.tipetext}>{item.tipo}</Text>
-        <Text style={styles.title}>{titulo ? titulo[idioma] || titulo['en'] : 'Título indisponível'}</Text>
+        <Text style={styles.title}>{titulo?.[idioma] || titulo?.en || 'Título indisponível'}</Text>
         <Text style={styles.date}>{item.data_publicacao}</Text>
         <View style={styles.estrela}>
           <FavoriteStar articleId={item.id} />
@@ -119,7 +102,9 @@ export default function Favoritos() {
           onChangeText={setSearch}
         />
       </View>
-      <View style={styles.separator_80}></View>
+
+      <View style={styles.separator_80} />
+
       <View style={styles.dropdownContainer}>
         <TouchableOpacity
           style={styles.dropdownButton}
@@ -129,51 +114,34 @@ export default function Favoritos() {
             {order === 'oldest' && t("Favoritos.Antigos")}
             {order === 'newest' && t("Favoritos.Novos")}
             {order === 'recent_added' && t("Favoritos.Recentemente Adicionados")}
-            {order === 'default' && t("Favoritos.Recentemente Adicionados")}
+            {order === 'default' && t("Favoritos.Últimos Adicionados")}
           </Text>
-          {isDropdownVisible ? <AntDesign name="up" size={30} color="#fff" /> : <AntDesign name="down" size={30} color="#fff" />}
+          <AntDesign name={isDropdownVisible ? 'up' : 'down'} size={30} color="#fff" />
         </TouchableOpacity>
         {isDropdownVisible && (
           <View style={styles.dropdownOptions}>
-            <TouchableOpacity
-              style={[styles.dropdownOption, order === 'oldest' && styles.dropdownOptionSelected]}
-              onPress={() => handleOrderChange('oldest')}
-            >
-              <Text style={[styles.dropdownOptionText, order === 'oldest' && styles.dropdownOptionTextSelected]}>
-                {t("Favoritos.Antigos")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.dropdownOption, order === 'newest' && styles.dropdownOptionSelected]}
-              onPress={() => handleOrderChange('newest')}
-            >
-              <Text style={[styles.dropdownOptionText, order === 'newest' && styles.dropdownOptionTextSelected]}>
-                {t("Favoritos.Novos")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.dropdownOption, order === 'recent_added' && styles.dropdownOptionSelected]}
-              onPress={() => handleOrderChange('recent_added')}
-            >
-              <Text style={[styles.dropdownOptionText, order === 'recent_added' && styles.dropdownOptionTextSelected]}>
-                {t("Favoritos.Recentemente Adicionados")}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.dropdownOption, order === 'default' && styles.dropdownOptionSelected]}
-              onPress={() => handleOrderChange('default')}
-            >
-              <Text style={[styles.dropdownOptionText, order === 'default' && styles.dropdownOptionTextSelected]}>
-                {t("Favoritos.Últimos Adicionados")}
-              </Text>
-            </TouchableOpacity>
+            {['oldest', 'newest', 'recent_added', 'default'].map((opt) => (
+              <TouchableOpacity
+                key={opt}
+                style={[styles.dropdownOption, order === opt && styles.dropdownOptionSelected]}
+                onPress={() => handleOrderChange(opt)}
+              >
+                <Text style={[styles.dropdownOptionText, order === opt && styles.dropdownOptionTextSelected]}>
+                  {t(`Favoritos.${opt === 'default' ? 'Últimos Adicionados' : opt === 'recent_added' ? 'Recentemente Adicionados' : opt === 'newest' ? 'Novos' : 'Antigos'}`)}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         )}
       </View>
-      <View style={styles.separator_80}></View>
-      {loading ? <Text>Loading...</Text> : (
+
+      <View style={styles.separator_80} />
+
+      {loading ? (
+        <Text style={styles.carregando}>{t('Carregando')}</Text>
+      ) : (
         <FlatList
-          data={filteredFavoritos}
+          data={getFiltered()}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
           onRefresh={handleRefresh}
@@ -288,4 +256,9 @@ const styles = StyleSheet.create({
   dropdownOptionTextSelected: {
     color: '#fff',
   },
+  carregando: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: '50%'
+  }
 });

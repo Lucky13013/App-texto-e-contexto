@@ -4,12 +4,14 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import FavoriteStar from '../../components/ToggleFavorite';
 import { useTranslation } from 'react-i18next';
+import '../../constants/i18n.js';
 
 export default function ArticleList({ route }) {
   const { fromDate, untilDate } = route.params;
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { i18n } = useTranslation();
+  const [refreshing, setRefreshing] = useState(false); // Estado de refresh
+  const { t, i18n } = useTranslation();
   const navigation = useNavigation();
   const idioma = i18n.language;
 
@@ -17,26 +19,30 @@ export default function ArticleList({ route }) {
     try {
       return JSON.parse(jsonString.replace(/\\/g, '').replace(/'/g, '"'));
     } catch (e) {
-      
       return null;
     }
   };
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await axios.get(`https://textocontexto.pythonanywhere.com/api/artigos_por_ano/`, {
-          params: {
-            year: fromDate
-          }
-        });
-        setArticles(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get(`https://textocontexto.pythonanywhere.com/api/artigos_por_ano/`, {
+        params: { year: fromDate }
+      });
+      setArticles(response.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchArticles();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
     fetchArticles();
   }, [fromDate, untilDate]);
 
@@ -45,7 +51,7 @@ export default function ArticleList({ route }) {
     if (typeof titulo === 'string') {
       titulo = parseJson(titulo);
     }
-    
+
     return (
       <TouchableOpacity
         style={styles.article}
@@ -63,11 +69,15 @@ export default function ArticleList({ route }) {
 
   return (
     <View style={styles.container}>
-      {loading ? <Text>Loading...</Text> : (
+      {loading ? (
+        <Text>{t('Carregando')}</Text>
+      ) : (
         <FlatList
           data={articles}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
+          onRefresh={handleRefresh}
+          refreshing={refreshing}
         />
       )}
     </View>
@@ -86,7 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     borderWidth: 1,
-    borderRadius: 5,
     borderColor: '#e06eaa',
     elevation: 5,
   },
@@ -125,5 +134,9 @@ const styles = StyleSheet.create({
   estrela: {
     flexDirection: 'row',
     justifyContent: 'flex-end'
+  },
+  date: {
+    color: '#666',
+    marginTop: 4,
   }
 });

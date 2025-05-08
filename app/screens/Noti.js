@@ -123,7 +123,7 @@ export default function Noti() {
   return (
     <View style={styles.container}>
       <View style={styles.separator_80}></View>
-      {loading ? <Text>Loading...</Text> : (
+      {loading ? <Text>{t('Carregando')}</Text> : (
         <FlatList
           data={notificacoes}
           renderItem={renderItem}

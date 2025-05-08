@@ -1,4 +1,4 @@
-rootProject.name = 'App TCE'
+rootProject.name = 'T&C App'
 
 dependencyResolutionManagement {
   versionCatalogs {

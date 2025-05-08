@@ -127,7 +127,7 @@ export default function Aba_pesquisa() {
       </TouchableOpacity>
       {renderSortMenu()}
       <View style={styles.separator_80}></View>
-      {loading ? <Text>Loading...</Text> : (
+      {loading ? <Text>{t('Carregando')}</Text> : (
         <FlatList
           data={results}
           renderItem={renderItem}

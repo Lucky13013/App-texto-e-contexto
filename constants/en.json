@@ -1,5 +1,6 @@
 {
   "greeting": "Hello!",
+  "Carregando": "Loading...",
 
   "pages": {
     "Pesquisar": "Search",

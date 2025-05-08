@@ -191,6 +191,7 @@ function Tabs() {
             width: '100%',
             fontSize: 12,
             marginBottom: 3,
+            fontWeight: 'bold',
           },
           tabBarIcon: ({ color }) => (
             <FontAwesome 
@@ -240,7 +241,7 @@ function Tabs() {
             width: '100%',
             fontSize: 12,
             marginBottom: 3,
-            fontStyle: 'italic',
+            fontWeight: 'bold',
           },
           tabBarIcon: ({ color }) => (
             <Entypo 
