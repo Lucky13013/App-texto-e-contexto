@@ -59,10 +59,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fef6ff',
   },
   container1: {
-    padding:15,
-    width:"90%",
-    borderRadius:10,
-    backgroundColor: '#fff',
+    width: '90%',
+    backgroundColor: '#ffffff',
+    padding: 25,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#e0d1e0'
   },
   text: {
     fontSize: 20,

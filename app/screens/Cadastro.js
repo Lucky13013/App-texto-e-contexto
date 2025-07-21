@@ -6,7 +6,8 @@ import {
   View, 
   KeyboardAvoidingView, 
   Platform, 
-  ScrollView 
+  ScrollView,
+  StyleSheet 
 } from 'react-native';
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -14,9 +15,8 @@ import { Text } from '../../components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import '../../constants/i18n.js';
 import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Importação dos ícones
-import { StyleSheet } from 'react-native';
+
+// As importações do FontAwesome foram removidas.
 
 export default function Cadastro() {
 
@@ -28,8 +28,8 @@ export default function Cadastro() {
   const [email, setemail] = useState('');
   const [senha, setsenha] = useState('');
   const [confirmarSenha, setconfirmarSenha] = useState('');
-  const [senhaVisivel, setSenhaVisivel] = useState(false); // Estado para controle da visibilidade da senha
-  const [confirmarSenhaVisivel, setConfirmarSenhaVisivel] = useState(false); // Estado para controle da visibilidade da confirmação de senha
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
+  const [confirmarSenhaVisivel, setConfirmarSenhaVisivel] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
@@ -102,15 +102,14 @@ export default function Cadastro() {
                 placeholder={Senha}
                 value={senha}
                 onChangeText={(texto) => setsenha(texto)}
-                secureTextEntry={!senhaVisivel} // Controle de visibilidade da senha
+                secureTextEntry={!senhaVisivel}
                 autoCapitalize="none"
               />
-              <TouchableOpacity style={styles.eyeIcon} onPress={togglePasswordVisibility}>
-                <FontAwesomeIcon
-                  icon={senhaVisivel ? faEye : faEyeSlash} // Alterna entre os ícones de olho
-                  size={20}
-                  color="#333"
-                />
+              {/* SUBSTITUIÇÃO DO ÍCONE POR TEXTO */}
+              <TouchableOpacity style={styles.toggleButton} onPress={togglePasswordVisibility}>
+                <Text style={styles.toggleButtonText}>
+                  {senhaVisivel ? 'Ocultar' : 'Mostrar'}
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -120,15 +119,14 @@ export default function Cadastro() {
                 placeholder={Confirmar}
                 value={confirmarSenha}
                 onChangeText={(texto) => setconfirmarSenha(texto)}
-                secureTextEntry={!confirmarSenhaVisivel} // Controle de visibilidade da confirmação de senha
+                secureTextEntry={!confirmarSenhaVisivel}
                 autoCapitalize="none"
               />
-              <TouchableOpacity style={styles.eyeIcon} onPress={toggleConfirmPasswordVisibility}>
-                <FontAwesomeIcon
-                  icon={confirmarSenhaVisivel ? faEye : faEyeSlash} // Alterna entre os ícones de olho
-                  size={20}
-                  color="#333"
-                />
+              {/* SUBSTITUIÇÃO DO ÍCONE POR TEXTO */}
+              <TouchableOpacity style={styles.toggleButton} onPress={toggleConfirmPasswordVisibility}>
+                <Text style={styles.toggleButtonText}>
+                  {confirmarSenhaVisivel ? 'Ocultar' : 'Mostrar'}
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -168,7 +166,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 1,
-    borderRadius: 8,
     borderColor: '#e06eaa',
     elevation: 5,
   },
@@ -202,9 +199,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  eyeIcon: {
+  // Estilo antigo do ícone removido (eyeIcon)
+  // Novo estilo para o botão de texto
+  toggleButton: {
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  toggleButtonText: {
+    color: '#e06eaa',
+    fontWeight: 'bold',
   },
 });

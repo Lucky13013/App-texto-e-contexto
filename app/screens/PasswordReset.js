@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, ActivityIndicator, Alert, Image } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  TouchableOpacity, 
+  Text, 
+  ActivityIndicator, 
+  Alert, 
+  Image,
+  StyleSheet 
+} from 'react-native';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Importando ícones
+
+// As importações do FontAwesome foram removidas.
 
 const PasswordResetScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false); // Controle de visibilidade para a nova senha
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Controle de visibilidade para a confirmação de senha
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handlePasswordReset = async () => {
@@ -58,14 +66,13 @@ const PasswordResetScreen = ({ navigation }) => {
             placeholder={t('password_reset.new_password')}
             value={newPassword}
             onChangeText={setNewPassword}
-            secureTextEntry={!showNewPassword} // Alterna visibilidade da senha
+            secureTextEntry={!showNewPassword}
           />
-          <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowNewPassword(!showNewPassword)}>
-            <FontAwesomeIcon
-              icon={showNewPassword ? faEye : faEyeSlash}
-              size={20}
-              color="#333"
-            />
+          {/* SUBSTITUIÇÃO DO ÍCONE POR TEXTO */}
+          <TouchableOpacity style={styles.toggleButton} onPress={() => setShowNewPassword(!showNewPassword)}>
+            <Text style={styles.toggleButtonText}>
+              {showNewPassword ? 'Ocultar' : 'Mostrar'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -75,14 +82,13 @@ const PasswordResetScreen = ({ navigation }) => {
             placeholder={t('password_reset.confirm_password')}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            secureTextEntry={!showConfirmPassword} // Alterna visibilidade da confirmação de senha
+            secureTextEntry={!showConfirmPassword}
           />
-          <TouchableOpacity style={styles.eyeIcon} onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <FontAwesomeIcon
-              icon={showConfirmPassword ? faEye : faEyeSlash}
-              size={20}
-              color="#333"
-            />
+          {/* SUBSTITUIÇÃO DO ÍCONE POR TEXTO */}
+          <TouchableOpacity style={styles.toggleButton} onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Text style={styles.toggleButtonText}>
+              {showConfirmPassword ? 'Ocultar' : 'Mostrar'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -112,6 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     borderColor:"#e06eaa",
+    borderWidth: 1, // Adicionado para consistência
   },
   title: {
     fontSize: 24,
@@ -119,12 +126,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
+    flex: 1, // Modificado para ocupar o espaço disponível
     padding: 10,
     borderWidth: 1,
     borderColor: '#e06eaa',
     borderRadius: 5,
-    marginBottom: 10,
-    width:"90%"
   },
   input2: {
     padding: 10,
@@ -138,9 +144,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    width: '100%', // Adicionado para garantir alinhamento
   },
-  eyeIcon: {
+  // Estilo antigo do ícone removido (eyeIcon)
+  toggleButton: {
     padding: 10,
+    marginLeft: 5, // Adicionado um pequeno espaço
+  },
+  toggleButtonText: {
+    color: '#e06eaa',
+    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#e06eaa',
